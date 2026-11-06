@@ -3,11 +3,19 @@
 # at ./NAME, identical in shape to the sandbox right after ./reset-sandbox.sh.
 # Used by the "lab" exercises that would otherwise pollute the sandbox
 # (lessons 02, 03, 05). Safe to re-run: it wipes ./NAME first.
-# Uses the pinned jj in tools/. Requires bash.
+# Requires jj 0.46.0+ on PATH and bash.
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"
-export PATH="$here/tools:$PATH"
+# Require jj 0.46.0+ — the lessons depend on 0.46 behavior.
+ver="$(jj --version 2>/dev/null | awk '{print $2}')" || true
+base="${ver%%-*}"; major="${base%%.*}"; rest="${base#*.}"; minor="${rest%%.*}"
+if [[ -z "${ver:-}" || ! "$major" =~ ^[0-9]+$ || ! "$minor" =~ ^[0-9]+$ ]] \
+   || (( major == 0 && minor < 46 )); then
+  echo "This tutorial needs jj 0.46.0 or newer; found '${ver:-no jj on PATH}'." >&2
+  echo "See https://docs.jj-vcs.dev/latest/install-and-setup/" >&2
+  exit 1
+fi
 name="${1:-}"
 [[ "$name" =~ ^lab-[A-Za-z0-9_-]+$ ]] || { echo "usage: $0 lab-<name>   (name must start with 'lab-')" >&2; exit 1; }
 dir="$here/$name"

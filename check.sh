@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # check.sh <NN> — verify the sandbox state after an op-log lesson's exercises.
-# Re-runnable. Uses the pinned jj in tools/ (0.46.0+).
+# Re-runnable. Needs jj 0.46.0+ on PATH.
 # It changes no commits or bookmarks, and its own queries pass
 # --ignore-working-copy, so they write no snapshot ops. (Checks that
 # deliberately probe working-copy state, like 'jj st' in lessons 04/05,
@@ -8,7 +8,15 @@
 set -u
 
 here="$(cd "$(dirname "$0")" && pwd)"
-export PATH="$here/tools:$PATH"
+# Require jj 0.46.0+ — the lessons depend on 0.46 behavior.
+ver="$(jj --version 2>/dev/null | awk '{print $2}')" || true
+base="${ver%%-*}"; major="${base%%.*}"; rest="${base#*.}"; minor="${rest%%.*}"
+if [[ -z "${ver:-}" || ! "$major" =~ ^[0-9]+$ || ! "$minor" =~ ^[0-9]+$ ]] \
+   || (( major == 0 && minor < 46 )); then
+  echo "This tutorial needs jj 0.46.0 or newer; found '${ver:-no jj on PATH}'." >&2
+  echo "See https://docs.jj-vcs.dev/latest/install-and-setup/" >&2
+  exit 1
+fi
 sandbox="$here/sandbox"
 lesson="${1:-}"
 

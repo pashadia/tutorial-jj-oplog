@@ -11,19 +11,20 @@
 #   sandbox/, side-task/ + scratch/ scratch-2/ spare/ review/ (lesson 04),
 #   colleague/ (lesson 06)
 #
-# Uses the pinned jj in tools/ (0.46.0+; see README.md). Requires bash.
+# Requires jj 0.46.0+ on PATH and bash (see README.md).
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"
 sandbox="$here/sandbox"
 remote="$here/shared-remote.git"
 
-# Use the pinned jj 0.46.0 shipped in tools/, whatever your PATH says.
-export PATH="$here/tools:$PATH"
-ver="$(jj --version 2>/dev/null | awk '{print $2}' | cut -d- -f1)" || true
-[[ -n "${ver:-}" ]] || { echo "jj not found (expected $here/tools/jj)" >&2; exit 1; }
-if [[ "$(printf '%s\n0.46.0\n' "$ver" | sort -V | head -n1)" != "0.46.0" ]]; then
-  echo "jj $ver is older than 0.46.0 — this tutorial needs 0.46.0 or newer." >&2
+# Require jj 0.46.0+ — the lessons depend on 0.46 behavior.
+ver="$(jj --version 2>/dev/null | awk '{print $2}')" || true
+base="${ver%%-*}"; major="${base%%.*}"; rest="${base#*.}"; minor="${rest%%.*}"
+if [[ -z "${ver:-}" || ! "$major" =~ ^[0-9]+$ || ! "$minor" =~ ^[0-9]+$ ]] \
+   || (( major == 0 && minor < 46 )); then
+  echo "This tutorial needs jj 0.46.0 or newer; found '${ver:-no jj on PATH}'." >&2
+  echo "See https://docs.jj-vcs.dev/latest/install-and-setup/" >&2
   exit 1
 fi
 echo "Using jj $ver ($(command -v jj))"

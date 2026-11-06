@@ -5,17 +5,18 @@ A focused, hands-on deep-dive into **one thing**: the jj (Jujutsu)
 every repo state you've ever been in and makes almost nothing
 destructive.
 
-It is written as a companion to the [main tutorial](../tutorial/):
-you should have finished its lessons 01–10 (in particular lesson 06,
-which introduced `jj op log` and `jj undo`, and lesson 08, which
-introduced workspaces). This mini-tutorial assumes that background
-and goes *much* deeper: the storage, the healing, the locking, the
-multi-user and multi-machine behavior, and the edges where it bends.
+It is written as a companion to the main jj tutorial (the `tutorial/`
+series this one is meant to sit beside; its lessons 01–10, and in
+particular lesson 06, which introduced `jj op log` and `jj undo`, and
+lesson 08, which introduced workspaces). This mini-tutorial assumes that
+background and goes *much* deeper: the storage, the healing, the
+locking, the multi-user and multi-machine behavior, and the edges where
+it bends.
 
-**Requires jj 0.46.0 or newer** — a pinned copy lives in `tools/jj`, and
-`reset-sandbox.sh` / `check.sh` put it on `PATH` for themselves. For your own
-shell sessions, run `export PATH="$PWD/tools:$PATH"` (bash/zsh) from this
-directory, then check with `jj --version`. The helper scripts
+**Requires jj 0.46.0 or newer** — check with `jj --version`, and see
+[jj's install page](https://docs.jj-vcs.dev/latest/install-and-setup/) if you need a
+newer one. The scripts refuse to run on older jj rather than silently
+producing different output. The helper scripts
 (`reset-sandbox.sh`, `check.sh`, `new-lab.sh`) have a `bash` hashbang and
 run fine from any shell, fish included. **Type the lesson snippets in
 bash or zsh**, though: they use `VAR=$(…)`, `<(…)`, `for … do … done`
